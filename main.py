@@ -70,8 +70,9 @@ def post_quote ():
     template = json_data.get ('template')
     data = template.get ('data')
 
-    author = list (filter (lambda d: d.get ('name') == 'author', data)).pop().get('value')
-    text   = list (filter (lambda d: d.get ('name') == 'text', data)).pop().get('value')
+    q = list (filter (lambda d: d.get ('name') == 'author', data)).pop()
+    author = q.get('value')
+    text   = q.get('value')
     id     = max ([q.id for q in quotes]) + 1
 
     quote = Quote (author = author, text = text, id = id)
@@ -168,11 +169,11 @@ logger = get_logger (
 quotes = [ Quote (author = 'David Hume', text = 'Programs that write programs are the happiest programs in the world.', id = 1)]
 
 if __name__ == '__main__':
-    log ('ready ...')
+    logger.info ('ready ...')
 
     app.run (
         host = config.get ('host'),
         port = config.get ('port'),
     )
 
-    log ('... bye')
+    logger.info ('... bye')
