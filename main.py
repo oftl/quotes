@@ -70,9 +70,8 @@ def post_quote ():
     template = json_data.get ('template')
     data = template.get ('data')
 
-    q = list (filter (lambda d: d.get ('name') == 'author', data)).pop()
-    author = q.get('value')
-    text   = q.get('value')
+    author = list (filter (lambda d: d.get ('name') == 'author', data)).pop().get('value')
+    text   = list (filter (lambda d: d.get ('name') == 'text', data)).pop().get('value')
     id     = max ([q.id for q in quotes]) + 1
 
     quote = Quote (author = author, text = text, id = id)
