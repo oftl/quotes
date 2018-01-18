@@ -1,12 +1,12 @@
 import unittest
 from webtest import TestApp
-import quotes.main
-import json
+
+from quotes.main import Main
 
 class Test_Quote (unittest.TestCase):
 
     def test (self):
-        app = TestApp (quotes.main.app)
+        app = TestApp (Main())
 
         res = app.get ('http://localhost:8080/quote',
             status = 200,
