@@ -16,9 +16,9 @@ class Quotes (Bottle):
     def __init__ (self):
         super (Quotes, self).__init__()
 
-        self.route ('/quote',      callback = self.random_quote)
-        self.route ('/quote/<id>', callback = self.quote_by_id)
-        self.route ('/quotes',     callback = self.post_quote)
+        self.route ('/quote',       method = 'GET',  callback = self.random_quote)
+        self.route ('/quote/<id>',  method = 'GET',  callback = self.quote_by_id)
+        self.route ('/quotes',      method = 'POST', callback = self.post_quote)
 
         self.config = self.get_config (configfile = 'quotes/quotes.yml')
         self.logger = self.get_logger (
