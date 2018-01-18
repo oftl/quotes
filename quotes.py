@@ -6,21 +6,21 @@ import json
 import yaml
 import random
 
-from quotes.quote import Quote
+from quotes.quotes_types import Quote
 
 
-class Main (Bottle):
+class Quotes (Bottle):
     """ simple fortune-like quotes server
     """
 
     def __init__ (self):
-        super (Main, self).__init__()
+        super (Quotes, self).__init__()
 
         self.route ('/quote',      callback = self.random_quote)
         self.route ('/quote/<id>', callback = self.quote_by_id)
         self.route ('/quotes',     callback = self.post_quote)
 
-        self.config = self.get_config (configfile = 'quotes/main.yml')
+        self.config = self.get_config (configfile = 'quotes/quotes.yml')
         self.logger = self.get_logger (
             logfile = self.config.get ('logfile'),
             logger  = self.config.get ('logger'),

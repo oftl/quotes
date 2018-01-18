@@ -1,12 +1,12 @@
 import unittest
 from webtest import TestApp
 
-from quotes.main import Main
+from quotes.quotes import Quotes
 
 class Test_Quote (unittest.TestCase):
 
     def test (self):
-        app = TestApp (Main())
+        app = TestApp (Quotes ())
 
         res = app.get ('http://localhost:8080/quote',
             status = 200,
