@@ -16,6 +16,7 @@ class Quotes (Bottle):
     def __init__ (self):
         super (Quotes, self).__init__()
 
+        self.route ('/',            method = 'GET',  callback = self.random_quote)
         self.route ('/quote',       method = 'GET',  callback = self.random_quote)
         self.route ('/quote/<id>',  method = 'GET',  callback = self.quote_by_id)
         self.route ('/quotes',      method = 'POST', callback = self.post_quote)
@@ -27,13 +28,18 @@ class Quotes (Bottle):
             level   = self.config.get ('level'),
         )
 
-        self.mk_url = lambda path: '{scheme}://{host}/{path}'.format (
+
+    def mk_url (self, path = None):
+        url = '{scheme}://{host}'.format (
             scheme = request.urlparts[0],
             host   = request.urlparts[1],
-            path   = path,
         )
 
-        self.quotes = [ Quote (author = 'David Hume', text = 'Programs that write programs are the happiest programs in the world.', id = 1)]
+        if path:
+            url += '/%s' % path
+
+        return url
+
 
     def start (self):
         """ start quotes server
@@ -70,7 +76,7 @@ class Quotes (Bottle):
         quote = kwa.get ('quote')
 
         item = dict (
-            href = self.mk_url ('/'),
+            href = self.mk_url (),
             data = [
                 dict (
                     name = 'author',
@@ -91,12 +97,12 @@ class Quotes (Bottle):
             links = [
                 dict (
                     rel = 'delete',
-                    href = self.mk_url ('/quote/{}/delete'.format (quote.id)),
+                    href = self.mk_url ('quote/{}/delete'.format (quote.id)),
                     prompt = 'Delete this quote'
                 ),
                 dict (
                     rel = 'like',
-                    href = self.mk_url ('/quote/{}/delete'.format (quote.id)),
+                    href = self.mk_url ('quote/{}/delete'.format (quote.id)),
                     prompt = 'Like this quote'
                 ),
             ],
@@ -123,7 +129,7 @@ class Quotes (Bottle):
         self.logger.info ('created quote: {}'.format (quote))
 
         response.set_header ('Content-Type', 'application/vnd.collection+json')
-        response.set_header ('Location', self.mk_url ('/quote/{}'.format (id)))
+        response.set_header ('Location', self.mk_url ('quote/{}'.format (id)))
         response.status = 201
 
         return
@@ -182,10 +188,10 @@ class Quotes (Bottle):
         return dict (
             collection = dict (
                 version = '1.0',
-                href = self.mk_url ('/'),
+                href = self.mk_url (),
                 links = [
                     dict (
-                        href   = self.mk_url ('/'),
+                        href   = self.mk_url (),
                         rel    = 'root',
                         prompt = 'Get a quote',
                         render = 'link',
