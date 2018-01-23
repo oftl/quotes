@@ -203,11 +203,16 @@ class API (Bottle):
                 href = self.mk_url (),
                 links = [
                     dict (
-                        href   = self.mk_url (),
+                        href   = self.mk_url ('/quote'),
                         rel    = 'root',
                         prompt = 'Get a quote',
                         render = 'link',
-                        # name   = 'random',
+                    ),
+                    dict (
+                        href   = self.mk_url ('/quotes'),
+                        rel    = 'root',
+                        prompt = 'Get all quote',
+                        render = 'link',
                     ),
                 ],
                 items = items,
