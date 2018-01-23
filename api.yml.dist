@@ -3,5 +3,8 @@ logfile:
 logger:
 loglevel:
 
+host:
+port:
+
 # boolean
 debug:

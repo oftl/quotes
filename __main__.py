@@ -1,2 +1,2 @@
-from quotes.quotes import Quotes
-Quotes().start()
+from quotes.api import API
+API().start()

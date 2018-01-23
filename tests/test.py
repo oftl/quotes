@@ -2,12 +2,12 @@ import unittest
 from webtest import TestApp
 import json
 
-from quotes.quotes import Quotes
+from quotes.api import API
 
 class Test_Quote (unittest.TestCase):
 
     def test (self):
-        app = TestApp (Quotes ())
+        app = TestApp (API ())
 
         # random quote
 
