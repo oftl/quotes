@@ -22,6 +22,7 @@ class API (Bottle):
         self.route ('/',            method = 'GET',  callback = self.random_quote)
         self.route ('/quote',       method = 'GET',  callback = self.random_quote)
         self.route ('/quote/<id>',  method = 'GET',  callback = self.quote_by_id)
+        self.route ('/quotes',      method = 'GET',  callback = self.all_quotes)
         self.route ('/quotes',      method = 'POST', callback = self.post_quote)
 
         self.config = self.get_config (configfile = 'quotes/api.yml')
@@ -62,14 +63,36 @@ class API (Bottle):
         """
 
         response.set_header ('Content-Type', 'application/vnd.collection+json')
-        return self.wrap_quote (quote = self.quotes.random_quote ())
+
+        return json.dumps (self.res (items = [
+            self.wrap_quote (
+                quote = self.quotes.random_quote ()
+            )
+        ]))
 
     def quote_by_id (self, id):
         """ get quote identified by its id
         """
 
         response.set_header ('Content-Type', 'application/vnd.collection+json')
-        return self.wrap_quote (quote = self.quotes.quote_by_id (id = id))
+        return json.dumps (self.res (items = [
+            self.wrap_quote (
+                quote = self.quotes.quote_by_id (id = id)
+            )
+        ]))
+
+
+    def all_quotes (self):
+        """ get quote identified by its id
+        """
+
+        response.set_header ('Content-Type', 'application/vnd.collection+json')
+        return json.dumps (self.res (items = [
+            self.wrap_quote (
+                quote = q
+            )
+            for q in self.quotes.all_quotes()
+        ]))
 
 
     def wrap_quote (self, **kwa):
@@ -111,7 +134,7 @@ class API (Bottle):
             ],
         )
 
-        return json.dumps (self.res (items = [item]))
+        return item
 
 
     def post_quote (self):

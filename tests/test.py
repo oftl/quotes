@@ -27,6 +27,15 @@ class Test_Quote (unittest.TestCase):
         self.assertEqual (1, len (res.json_body.get('collection').get('items')))
         self.assertEqual (res.content_type, 'application/vnd.collection+json')
 
+        # all quotes
+
+        res = app.get ('http://localhost:8080/quotes',
+            status = 200,
+        )
+
+        self.assertEqual (2, len (res.json_body.get('collection').get('items')))
+        self.assertEqual (res.content_type, 'application/vnd.collection+json')
+
         # new quote
 
         res = app.post ('http://localhost:8080/quotes',

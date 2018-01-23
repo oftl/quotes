@@ -69,6 +69,12 @@ class Quotes ():
             return self._quotes[i]
 
 
+    def all_quotes (self):
+        """ return all available quotes
+        """
+
+        return self._quotes
+
     ### helpers
 
 
