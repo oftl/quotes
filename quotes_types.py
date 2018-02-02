@@ -12,6 +12,14 @@ class Quote ():
             id      = self.id,
         )
 
+
+    def contains (self, term):
+        if term and term in self.text:
+            return True
+
+        return False
+
+
     @property
     def author (self):
         return self._author

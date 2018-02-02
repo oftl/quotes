@@ -24,6 +24,9 @@ class API (Bottle):
         self.route ('/quote/<id>',  method = 'GET',  callback = self.quote_by_id)
         self.route ('/quotes',      method = 'GET',  callback = self.all_quotes)
         self.route ('/quotes',      method = 'POST', callback = self.post_quote)
+        self.route ('/quote/<id>',  method = 'DELETE', callback = self.delete_quote)
+
+        self.route ('/search',      method = 'GET',   callback = self.search)
 
         self.config = self.get_config (configfile = 'quotes/api.yml')
         self.logger = self.get_logger (
@@ -57,6 +60,20 @@ class API (Bottle):
         )
 
         self.logger.info ('... bye')
+
+
+    def search (self):
+        term = request.query.search
+
+        response.set_header ('Content-Type', 'application/vnd.collection+json')
+
+        return json.dumps (self.res (items = [
+            self.wrap_quote (
+                quote = q
+            )
+            for q in self.quotes.search (term = term)
+        ]))
+
 
     def random_quote (self):
         """ get a random quote
@@ -122,14 +139,9 @@ class API (Bottle):
             ],
             links = [
                 dict (
-                    rel = 'delete',
-                    href = self.mk_url ('quote/{}/delete'.format (quote.id)),
-                    prompt = 'Delete this quote'
-                ),
-                dict (
-                    rel = 'like',
-                    href = self.mk_url ('quote/{}/delete'.format (quote.id)),
-                    prompt = 'Like this quote'
+                    rel = 'origin',
+                    href = 'https://duckduckgo/search={}'.format (quote.text),
+                    prompt = 'Origins of this quote'
                 ),
             ],
         )
@@ -158,6 +170,18 @@ class API (Bottle):
         response.set_header ('Content-Type', 'application/vnd.collection+json')
         response.set_header ('Location', self.mk_url ('quote/{}'.format (id)))
         response.status = 201
+
+        return
+
+
+    def delete_quote (self, id):
+        """ delete quote identified by id
+        """
+
+        self.quotes.delete_quote (id = id)
+
+        response.status = 204
+        response.set_header ('Content-Type', 'application/vnd.collection+json')
 
         return
 
@@ -216,7 +240,17 @@ class API (Bottle):
                     ),
                 ],
                 items = items,
-                queries = None,
+                queries = [
+                    dict (
+                        href   = self.mk_url ('search'),
+                        rel    = 'search',
+                        prompt = 'Enter search string',
+                        data = [dict (
+                            name  = 'search',
+                            value = '',
+                        )]
+                    ),
+                ],
                 template = dict (
                     data = [
                         dict (name = 'author', value = '', prompt = 'Author'),

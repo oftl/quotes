@@ -33,6 +33,11 @@ class Quotes ():
         return self.get_quote()
 
 
+    def search (self, **kwa):
+        term = kwa.get ('term')
+        return [q for q in self._quotes if q.contains (term)]
+
+
     def quote_by_id (self, id):
         """ get quote identified by its id
         """
@@ -74,6 +79,18 @@ class Quotes ():
         """
 
         return self._quotes
+
+
+    def delete_quote (self, **kwa):
+        id = int (kwa.get ('id'))
+
+        index = [index for (index, q) in enumerate (self._quotes) if q.id == id]
+
+        if len (index) > 0:
+            self._quotes.pop (index.pop())
+        else:
+            raise LookupError ('invalid id: %s' % id)
+
 
     ### helpers
 

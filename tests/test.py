@@ -60,6 +60,19 @@ class Test_Quote (unittest.TestCase):
         self.assertEqual (1, len (res.json_body.get('collection').get('items')))
         self.assertEqual (res.content_type, 'application/vnd.collection+json')
 
+        res = app.get ('http://localhost:8080/search?search=garfield',
+            status = 200,
+        )
+        self.assertEqual (1, len (res.json_body.get('collection').get('items')))
+
+        res = app.get ('http://localhost:8080/search?search=odie',
+            status = 200,
+        )
+        self.assertEqual (0, len (res.json_body.get('collection').get('items')))
+
+        res = app.delete ('http://localhost:8080/quote/3',
+            status = 204,
+        )
 
 if __name__ == '__main__':
     unittest.main()
